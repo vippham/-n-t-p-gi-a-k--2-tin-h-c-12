@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { questions } from './data';
 import { Question, QuestionType } from './types';
 import { QuizCard } from './components/QuizCard';
@@ -10,12 +10,29 @@ import {
   CheckSquare,
   ChevronRight,
   GraduationCap,
+  Home,
   RefreshCcw,
   Shuffle,
   Sparkles,
 } from 'lucide-react';
 
 type ViewState = 'MENU' | 'QUIZ' | 'RESULT' | 'REVIEW';
+
+type ResumeDraft = {
+  version: 1;
+  activeQuestionIds: string[];
+  currentIndex: number;
+  score: number;
+  wrongQuestionIds: string[];
+  selectedAnswer: string | boolean | null;
+  showFeedback: boolean;
+  lastSelectedType: QuestionType | 'ALL';
+  isShuffle: boolean;
+  questionCount: number | 'ALL';
+  savedAt: number;
+};
+
+const PROGRESS_STORAGE_KEY = 'tinhoc12_quiz_resume_v1';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('MENU');
@@ -33,7 +50,90 @@ const App: React.FC = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [wrongQuestions, setWrongQuestions] = useState<Question[]>([]);
 
+  const [resumeDraft, setResumeDraft] = useState<ResumeDraft | null>(null);
+
   const currentQuestion = activeQuestions[currentIndex];
+
+  const buildDraftFromCurrentState = (): ResumeDraft => ({
+    version: 1,
+    activeQuestionIds: activeQuestions.map((q) => q.id),
+    currentIndex,
+    score,
+    wrongQuestionIds: wrongQuestions.map((q) => q.id),
+    selectedAnswer,
+    showFeedback,
+    lastSelectedType,
+    isShuffle,
+    questionCount,
+    savedAt: Date.now(),
+  });
+
+  const clearResumeDraft = () => {
+    try {
+      window.localStorage.removeItem(PROGRESS_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
+    setResumeDraft(null);
+  };
+
+  const readResumeDraft = (): ResumeDraft | null => {
+    try {
+      const raw = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
+      if (!raw) return null;
+
+      const parsed = JSON.parse(raw) as Partial<ResumeDraft>;
+      if (parsed.version !== 1) return null;
+
+      if (!Array.isArray(parsed.activeQuestionIds) || parsed.activeQuestionIds.length === 0) return null;
+      if (typeof parsed.currentIndex !== 'number') return null;
+      if (typeof parsed.score !== 'number') return null;
+      if (!Array.isArray(parsed.wrongQuestionIds)) return null;
+      if (typeof parsed.showFeedback !== 'boolean') return null;
+
+      if (parsed.lastSelectedType !== 'ALL' && parsed.lastSelectedType !== 'MCQ' && parsed.lastSelectedType !== 'TF') {
+        return null;
+      }
+      if (typeof parsed.isShuffle !== 'boolean') return null;
+      if (parsed.questionCount !== 'ALL' && typeof parsed.questionCount !== 'number') return null;
+
+      return parsed as ResumeDraft;
+    } catch {
+      return null;
+    }
+  };
+
+  const restoreFromDraft = (draft: ResumeDraft) => {
+    const restoredActiveQuestions = draft.activeQuestionIds
+      .map((id) => questions.find((q) => q.id === id))
+      .filter((q): q is Question => Boolean(q));
+
+    if (restoredActiveQuestions.length !== draft.activeQuestionIds.length) {
+      // Data has changed (or draft is stale) => discard.
+      clearResumeDraft();
+      return;
+    }
+
+    if (draft.currentIndex < 0 || draft.currentIndex >= restoredActiveQuestions.length) {
+      clearResumeDraft();
+      return;
+    }
+
+    const restoredWrongQuestions = draft.wrongQuestionIds
+      .map((id) => questions.find((q) => q.id === id))
+      .filter((q): q is Question => Boolean(q));
+
+    setLastSelectedType(draft.lastSelectedType);
+    setIsShuffle(draft.isShuffle);
+    setQuestionCount(draft.questionCount);
+    setActiveQuestions(restoredActiveQuestions);
+    setWrongQuestions(restoredWrongQuestions);
+    setCurrentIndex(draft.currentIndex);
+    setScore(draft.score);
+    setSelectedAnswer(draft.selectedAnswer);
+    setShowFeedback(draft.showFeedback);
+    setView('QUIZ');
+  };
 
   const availableQuestionCount = useMemo(
     () => ({
@@ -54,6 +154,7 @@ const App: React.FC = () => {
   };
 
   const startQuiz = (type: QuestionType | 'ALL') => {
+    clearResumeDraft();
     setLastSelectedType(type);
     let q = type === 'ALL' ? questions : questions.filter((question) => question.type === type);
 
@@ -73,6 +174,28 @@ const App: React.FC = () => {
     setShowFeedback(false);
     setView('QUIZ');
   };
+
+  useEffect(() => {
+    // Load a previously saved "làm dở" session (story-style resume).
+    try {
+      const draft = readResumeDraft();
+      setResumeDraft(draft);
+    } catch {
+      // ignore
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    // Keep saving current progress while the user is actively doing the quiz.
+    if (view !== 'QUIZ' || activeQuestions.length === 0) return;
+    try {
+      const draft = buildDraftFromCurrentState();
+      window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(draft));
+    } catch {
+      // ignore
+    }
+  }, [view, activeQuestions, currentIndex, score, selectedAnswer, showFeedback, wrongQuestions, lastSelectedType, isShuffle, questionCount]);
 
   const handleReviewWrong = () => {
     if (wrongQuestions.length === 0) {
@@ -106,6 +229,7 @@ const App: React.FC = () => {
       setSelectedAnswer(null);
       setShowFeedback(false);
     } else {
+      clearResumeDraft();
       setView('RESULT');
     }
   };
@@ -115,6 +239,21 @@ const App: React.FC = () => {
   };
 
   const handleHome = () => {
+    if (view === 'QUIZ' && activeQuestions.length > 0) {
+      // Save progress before leaving (so we can resume later like watch story).
+      const draft = buildDraftFromCurrentState();
+      try {
+        window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(draft));
+      } catch {
+        // ignore
+      }
+      setResumeDraft(draft);
+    }
+
+    if (view === 'RESULT') {
+      clearResumeDraft();
+    }
+
     setView('MENU');
   };
 
@@ -155,6 +294,45 @@ const App: React.FC = () => {
       <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-6 sm:px-6 md:py-10">
         {view === 'MENU' && (
           <div className="flex flex-1 flex-col gap-5 animate-in fade-in duration-500 md:gap-6">
+            {resumeDraft && (
+              <section className="rounded-[24px] border border-blue-100 bg-blue-50/60 p-5 shadow-[0_18px_45px_-30px_rgba(30,64,175,0.25)] md:p-6">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div className="max-w-2xl">
+                    <p className="text-sm font-semibold text-blue-800">
+                      Bạn đang làm đến câu {resumeDraft.currentIndex + 1}/{resumeDraft.activeQuestionIds.length}
+                    </p>
+                    <p className="mt-1 text-slate-700">
+                      Có muốn làm tiếp không?
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => resumeDraft && restoreFromDraft(resumeDraft)}
+                      className="flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-lg shadow-blue-200 transition-colors hover:bg-blue-700"
+                    >
+                      Làm tiếp
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Discard the draft + reset current in-memory quiz state.
+                        clearResumeDraft();
+                        setActiveQuestions([]);
+                        setCurrentIndex(0);
+                        setScore(0);
+                        setSelectedAnswer(null);
+                        setShowFeedback(false);
+                        setWrongQuestions([]);
+                      }}
+                      className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+                    >
+                      Bỏ qua
+                    </button>
+                  </div>
+                </div>
+              </section>
+            )}
+
             <section className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.85fr)] md:gap-6">
               <div className="relative overflow-hidden rounded-[24px] border border-blue-100 bg-[linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(239,246,255,0.92))] p-5 shadow-[0_24px_60px_-32px_rgba(37,99,235,0.45)] md:rounded-[28px] md:p-7">
                 <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-blue-200/30 blur-3xl" />
@@ -239,7 +417,7 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            {wrongQuestions.length > 0 && (
+            {!resumeDraft && wrongQuestions.length > 0 && (
               <button
                 onClick={handleReviewWrong}
                 className="flex w-full items-center justify-between gap-4 rounded-[24px] border border-orange-200 bg-[linear-gradient(135deg,_#fff7ed,_#ffffff)] px-5 py-4 text-left shadow-[0_16px_36px_-28px_rgba(234,88,12,0.6)] transition-all hover:border-orange-300 hover:bg-orange-50 md:rounded-[28px] md:px-6"
@@ -364,11 +542,20 @@ const App: React.FC = () => {
         {view === 'QUIZ' && currentQuestion && (
           <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center">
             <div className="mb-8 w-full">
-              <div className="mb-3 flex items-center justify-between text-sm text-slate-500">
+              <div className="mb-3 flex items-center justify-between gap-4 text-sm text-slate-500">
                 <span className="font-medium">Tiến độ làm bài</span>
-                <span>
-                  {Math.min(currentIndex + 1, activeQuestions.length)} / {activeQuestions.length}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span>
+                    {Math.min(currentIndex + 1, activeQuestions.length)} / {activeQuestions.length}
+                  </span>
+                  <button
+                    onClick={handleHome}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 font-semibold text-slate-600 transition-colors hover:bg-white"
+                  >
+                    <Home className="h-4 w-4" />
+                    Quay về trang chủ
+                  </button>
+                </div>
               </div>
               <div className="h-3 w-full overflow-hidden rounded-full bg-slate-200/80">
                 <div
