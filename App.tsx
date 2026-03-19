@@ -156,34 +156,34 @@ const App: React.FC = () => {
         {view === 'MENU' && (
           <div className="flex flex-1 flex-col gap-5 animate-in fade-in duration-500 md:gap-6">
             <section className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(300px,0.85fr)] md:gap-6">
-              <div className="relative overflow-hidden rounded-[24px] border border-blue-100 bg-[linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(239,246,255,0.92))] p-6 shadow-[0_24px_60px_-32px_rgba(37,99,235,0.45)] md:rounded-[28px] md:p-8">
+              <div className="relative overflow-hidden rounded-[24px] border border-blue-100 bg-[linear-gradient(135deg,_rgba(255,255,255,0.96),_rgba(239,246,255,0.92))] p-5 shadow-[0_24px_60px_-32px_rgba(37,99,235,0.45)] md:rounded-[28px] md:p-7">
                 <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-blue-200/30 blur-3xl" />
-                <div className="relative max-w-3xl space-y-4">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-3 py-1.5 text-xs font-semibold text-blue-700 md:px-4 md:py-2 md:text-sm">
-                    <Sparkles className="h-4 w-4" />
+                <div className="relative max-w-3xl space-y-3.5">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-white/80 px-3 py-1 text-[11px] font-semibold text-blue-700 md:px-3.5 md:py-1.5 md:text-xs">
+                    <Sparkles className="h-3.5 w-3.5" />
                     Luyện đề mượt hơn, tập trung hơn
                   </div>
 
                   <div className="space-y-2">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
+                    <h1 className="text-[2.15rem] font-extrabold leading-tight tracking-tight text-slate-900 sm:text-[2.45rem] md:text-[3.1rem]">
                       Ôn tập giữa kỳ 2 Tin học 12
                     </h1>
-                    <p className="max-w-2xl text-base leading-7 text-slate-600 md:text-lg md:leading-8">
-                      Chọn chế độ phù hợp và bắt đầu làm bài nhanh trên cả điện thoại lẫn máy tính.
+                    <p className="max-w-xl text-[15px] leading-7 text-slate-600 md:text-base md:leading-7">
+                    Sáng sớm thức dậy anh bỗng thấy mình quá đẹp trai
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2.5 md:gap-3">
-                    <div className="rounded-2xl border border-white/80 bg-white/80 p-3 shadow-sm md:p-4">
-                      <p className="text-xl font-bold text-slate-900 md:text-2xl">{availableQuestionCount.ALL}</p>
+                  <div className="grid grid-cols-3 gap-2 md:max-w-lg md:gap-3">
+                    <div className="rounded-2xl border border-white/80 bg-white/80 p-3 shadow-sm">
+                      <p className="text-lg font-bold text-slate-900 md:text-xl">{availableQuestionCount.ALL}</p>
                       <p className="text-xs text-slate-500 md:text-sm">Tổng số câu</p>
                     </div>
-                    <div className="rounded-2xl border border-white/80 bg-white/80 p-3 shadow-sm md:p-4">
-                      <p className="text-xl font-bold text-slate-900 md:text-2xl">{availableQuestionCount.MCQ}</p>
+                    <div className="rounded-2xl border border-white/80 bg-white/80 p-3 shadow-sm">
+                      <p className="text-lg font-bold text-slate-900 md:text-xl">{availableQuestionCount.MCQ}</p>
                       <p className="text-xs text-slate-500 md:text-sm">ABCD</p>
                     </div>
-                    <div className="rounded-2xl border border-white/80 bg-white/80 p-3 shadow-sm md:p-4">
-                      <p className="text-xl font-bold text-slate-900 md:text-2xl">{availableQuestionCount.TF}</p>
+                    <div className="rounded-2xl border border-white/80 bg-white/80 p-3 shadow-sm">
+                      <p className="text-lg font-bold text-slate-900 md:text-xl">{availableQuestionCount.TF}</p>
                       <p className="text-xs text-slate-500 md:text-sm">Đúng/Sai</p>
                     </div>
                   </div>

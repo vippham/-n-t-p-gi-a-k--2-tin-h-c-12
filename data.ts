@@ -899,217 +899,343 @@ export const questions: Question[] = [
     correctAnswer: "A"
   },
   {
-    id: "tf_70",
+    id: "mcq_70",
+    category: "CSS",
+    type: "MCQ",
+    text: "Thuộc tính nào dùng để thay đổi khoảng cách giữa các dòng văn bản?",
+    options: [
+      "A. line-height",
+      "B. letter-spacing",
+      "C. text-indent",
+      "D. word-spacing"
+    ],
+    correctAnswer: "A",
+    explanation: "Thuộc tính line-height dùng để điều chỉnh khoảng cách giữa các dòng văn bản."
+  },
+  {
+    id: "mcq_71",
+    category: "CSS",
+    type: "MCQ",
+    text: "Đoạn CSS sau có tác dụng gì? body { background-color: black; color: white; }",
+    options: [
+      "A. Nền trắng chữ đen",
+      "B. Nền đen chữ trắng",
+      "C. Chỉ đổi màu chữ",
+      "D. Không thay đổi"
+    ],
+    correctAnswer: "B",
+    explanation: "background-color: black làm nền đen, còn color: white làm chữ màu trắng."
+  },
+  {
+    id: "mcq_72",
+    category: "CSS",
+    type: "MCQ",
+    text: "Selector nào chọn tất cả các thẻ <p> bên trong <div>?",
+    options: [
+      "A. div + p",
+      "B. div p",
+      "C. div > p",
+      "D. p div"
+    ],
+    correctAnswer: "B",
+    explanation: "Selector div p chọn mọi thẻ p nằm bên trong div, kể cả lồng nhiều cấp."
+  },
+  {
+    id: "mcq_73",
+    category: "CSS",
+    type: "MCQ",
+    text: "Cho CSS: #box { color: red; } .box { color: blue; } và HTML: <p id=\"box\" class=\"box\">Hello</p>. Kết quả màu chữ là:",
+    options: [
+      "A. Đỏ",
+      "B. Xanh",
+      "C. Đen",
+      "D. Không xác định"
+    ],
+    correctAnswer: "A",
+    explanation: "Selector id có độ ưu tiên cao hơn selector class nên chữ sẽ có màu đỏ."
+  },
+  {
+    id: "mcq_74",
+    category: "CSS",
+    type: "MCQ",
+    text: "Trong CSS box model, thứ tự từ trong ra ngoài là:",
+    options: [
+      "A. margin → border → padding → content",
+      "B. content → padding → border → margin",
+      "C. padding → content → border → margin",
+      "D. content → border → padding → margin"
+    ],
+    correctAnswer: "B",
+    explanation: "Box model gồm content ở trong cùng, tiếp theo là padding, border và ngoài cùng là margin."
+  },
+  {
+    id: "mcq_75",
+    category: "CSS",
+    type: "MCQ",
+    text: "margin khác padding ở điểm nào?",
+    options: [
+      "A. margin là khoảng cách bên trong",
+      "B. padding là khoảng cách bên ngoài",
+      "C. margin là khoảng cách bên ngoài, padding bên trong",
+      "D. Hai cái giống nhau"
+    ],
+    correctAnswer: "C",
+    explanation: "margin tạo khoảng cách bên ngoài phần tử, còn padding tạo khoảng cách giữa nội dung và viền."
+  },
+  {
+    id: "mcq_76",
+    category: "CSS",
+    type: "MCQ",
+    text: "Đoạn CSS sau tạo hiệu ứng gì? .box { padding: 20px; border: 2px solid black; }",
+    options: [
+      "A. Tăng khoảng cách ngoài",
+      "B. Tăng khoảng cách giữa nội dung và viền",
+      "C. Làm chữ to hơn",
+      "D. Căn giữa nội dung"
+    ],
+    correctAnswer: "B",
+    explanation: "padding làm tăng khoảng cách giữa nội dung và đường viền của phần tử."
+  },
+  {
+    id: "mcq_77",
+    category: "CSS",
+    type: "MCQ",
+    text: "Muốn 2 <div> nằm cạnh nhau, cách nào đúng?",
+    options: [
+      "A. display: block",
+      "B. display: inline-block",
+      "C. text-align: left",
+      "D. margin: auto"
+    ],
+    correctAnswer: "B",
+    explanation: "display: inline-block cho phép phần tử giữ dạng khối nhưng vẫn có thể nằm cạnh nhau."
+  },
+  {
+    id: "mcq_78",
+    category: "CSS",
+    type: "MCQ",
+    text: "Cho CSS: div { width: 200px; padding: 10px; border: 5px solid black; } Tổng chiều rộng thực tế là:",
+    options: [
+      "A. 200px",
+      "B. 210px",
+      "C. 220px",
+      "D. 230px"
+    ],
+    correctAnswer: "D",
+    explanation: "Tổng chiều rộng = 200 + 10*2 + 5*2 = 230px."
+  },
+  {
+    id: "tf_79",
     category: "HTML",
     type: "TF",
     text: "Thẻ <img> được dùng để chèn hình ảnh vào trang web HTML.",
     correctAnswer: true
   },
   {
-    id: "tf_71",
+    id: "tf_80",
     category: "HTML",
     type: "TF",
     text: "Thẻ <audio> không cần thẻ đóng (</audio>) khi chèn âm thanh vào trang web.",
     correctAnswer: false
   },
   {
-    id: "tf_72",
+    id: "tf_81",
     category: "HTML",
     type: "TF",
     text: "Thuộc tính controls trong thẻ <video> giúp hiển thị các nút điều khiển như phát, tạm dừng và điều chỉnh âm lượng.",
     correctAnswer: true
   },
   {
-    id: "tf_73",
+    id: "tf_82",
     category: "HTML",
     type: "TF",
     text: "Thuộc tính alt trong thẻ <img> dùng để thay đổi kích thước của hình ảnh khi hiển thị.",
     correctAnswer: false
   },
   {
-    id: "tf_74",
+    id: "tf_83",
     category: "HTML",
     type: "TF",
     text: "Đoạn mã sau sẽ nhúng một trang web khác vào trang hiện tại: <iframe src=\"https://example.com\"></iframe>",
     correctAnswer: true
   },
   {
-    id: "tf_75",
+    id: "tf_84",
     category: "HTML",
     type: "TF",
     text: "Thẻ <form> dùng để tạo biểu mẫu nhập dữ liệu trên trang web.",
     correctAnswer: true
   },
   {
-    id: "tf_76",
+    id: "tf_85",
     category: "HTML",
     type: "TF",
     text: "Thuộc tính action trong thẻ <form> dùng để chỉ phương thức gửi dữ liệu.",
     correctAnswer: false
   },
   {
-    id: "tf_77",
+    id: "tf_86",
     category: "HTML",
     type: "TF",
     text: "<input type=\"text\"> dùng để nhập một dòng văn bản.",
     correctAnswer: true
   },
   {
-    id: "tf_78",
+    id: "tf_87",
     category: "HTML",
     type: "TF",
     text: "<input type=\"password\"> hiển thị nội dung người dùng nhập dưới dạng ký tự ẩn.",
     correctAnswer: true
   },
   {
-    id: "tf_79",
+    id: "tf_88",
     category: "HTML",
     type: "TF",
     text: "Thẻ <textarea> chỉ cho phép nhập một dòng văn bản.",
     correctAnswer: false
   },
   {
-    id: "tf_80",
+    id: "tf_89",
     category: "HTML",
     type: "TF",
     text: "Phương thức GET gửi dữ liệu thông qua URL của trình duyệt.",
     correctAnswer: true
   },
   {
-    id: "tf_81",
+    id: "tf_90",
     category: "HTML",
     type: "TF",
     text: "Phương thức POST hiển thị toàn bộ dữ liệu gửi đi trên thanh địa chỉ trình duyệt.",
     correctAnswer: false
   },
   {
-    id: "tf_82",
+    id: "tf_91",
     category: "HTML",
     type: "TF",
     text: "Các nút <input type=\"radio\"> có cùng thuộc tính name chỉ cho phép chọn một đáp án.",
     correctAnswer: true
   },
   {
-    id: "tf_83",
+    id: "tf_92",
     category: "HTML",
     type: "TF",
     text: "<input type=\"checkbox\"> chỉ cho phép người dùng chọn một phương án duy nhất.",
     correctAnswer: false
   },
   {
-    id: "tf_84",
+    id: "tf_93",
     category: "HTML",
     type: "TF",
     text: "Thẻ <select> dùng để tạo danh sách thả xuống trong biểu mẫu.",
     correctAnswer: true
   },
   {
-    id: "tf_85",
+    id: "tf_94",
     category: "HTML",
     type: "TF",
     text: "Thẻ <option> phải nằm bên trong thẻ <select>.",
     correctAnswer: true
   },
   {
-    id: "tf_86",
+    id: "tf_95",
     category: "HTML",
     type: "TF",
     text: "<input type=\"submit\"> dùng để gửi dữ liệu của biểu mẫu.",
     correctAnswer: true
   },
   {
-    id: "tf_87",
+    id: "tf_96",
     category: "HTML",
     type: "TF",
     text: "Nếu trong một form có hai ô <input type=\"radio\"> khác thuộc tính name, người dùng có thể chọn cả hai.",
     correctAnswer: true
   },
   {
-    id: "tf_88",
+    id: "tf_97",
     category: "HTML",
     type: "TF",
     text: "Nếu bỏ thuộc tính name trong thẻ <input>, dữ liệu của ô đó vẫn được gửi về máy chủ khi submit.",
     correctAnswer: false
   },
   {
-    id: "tf_89",
+    id: "tf_98",
     category: "HTML",
     type: "TF",
     text: "Trong một form, có thể sử dụng nhiều nút <input type=\"submit\">.",
     correctAnswer: true
   },
   {
-    id: "tf_90",
+    id: "tf_99",
     category: "HTML",
     type: "TF",
     text: "Thuộc tính required trong thẻ <input> bắt buộc người dùng phải nhập dữ liệu trước khi gửi form.",
     correctAnswer: true
   },
   {
-    id: "tf_91",
+    id: "tf_100",
     category: "HTML",
     type: "TF",
     text: "Thẻ <label> giúp tăng khả năng truy cập và khi nhấp vào label có thể chọn ô nhập tương ứng.",
     correctAnswer: true
   },
   {
-    id: "tf_92",
+    id: "tf_101",
     category: "HTML",
     type: "TF",
     text: "<input type=\"email\"> giúp kiểm tra định dạng email cơ bản trước khi gửi dữ liệu.",
     correctAnswer: true
   },
   {
-    id: "tf_93",
+    id: "tf_102",
     category: "HTML",
     type: "TF",
     text: "Có thể đặt thẻ <form> lồng bên trong một thẻ <form> khác.",
     correctAnswer: false
   },
   {
-    id: "tf_94",
+    id: "tf_103",
     category: "HTML",
     type: "TF",
     text: "Thuộc tính placeholder dùng để hiển thị gợi ý trong ô nhập dữ liệu.",
     correctAnswer: true
   },
   {
-    id: "tf_95",
+    id: "tf_104",
     category: "HTML",
     type: "TF",
     text: "Thẻ <a> luôn yêu cầu thuộc tính href để hoạt động như một liên kết.",
     correctAnswer: true
   },
   {
-    id: "tf_96",
+    id: "tf_105",
     category: "CSS",
     type: "TF",
     text: "CSS có thể được viết trực tiếp bên trong thẻ HTML thông qua thuộc tính style.",
     correctAnswer: true
   },
   {
-    id: "tf_97",
+    id: "tf_106",
     category: "CSS",
     type: "TF",
     text: "Thuộc tính margin dùng để tạo khoảng cách bên trong giữa nội dung và viền của phần tử.",
     correctAnswer: false
   },
   {
-    id: "tf_98",
+    id: "tf_107",
     category: "HTML",
     type: "TF",
     text: "Thẻ <iframe> được sử dụng để nhúng một trang web khác vào trong trang web hiện tại.",
     correctAnswer: true
   },
   {
-    id: "tf_99",
+    id: "tf_108",
     category: "CSS",
     type: "TF",
     text: "Trong CSS, id selector được bắt đầu bằng dấu chấm (.).",
     correctAnswer: false
   },
   {
-    id: "tf_100",
+    id: "tf_109",
     category: "HTML",
     type: "TF",
     text: "Thuộc tính alt trong thẻ <img> là bắt buộc để trang web đạt chuẩn và hỗ trợ người khiếm thị.",
