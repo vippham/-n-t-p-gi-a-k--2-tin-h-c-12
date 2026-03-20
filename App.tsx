@@ -54,12 +54,21 @@ const App: React.FC = () => {
 
   const currentQuestion = activeQuestions[currentIndex];
 
+  const activeQuestionIds = useMemo(
+    () => activeQuestions.map((q) => q.id),
+    [activeQuestions]
+  );
+  const wrongQuestionIds = useMemo(
+    () => wrongQuestions.map((q) => q.id),
+    [wrongQuestions]
+  );
+
   const buildDraftFromCurrentState = (): ResumeDraft => ({
     version: 1,
-    activeQuestionIds: activeQuestions.map((q) => q.id),
+    activeQuestionIds,
     currentIndex,
     score,
-    wrongQuestionIds: wrongQuestions.map((q) => q.id),
+    wrongQuestionIds,
     selectedAnswer,
     showFeedback,
     lastSelectedType,
@@ -186,16 +195,36 @@ const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    // Keep saving current progress while the user is actively doing the quiz.
-    if (view !== 'QUIZ' || activeQuestions.length === 0) return;
+  const saveDraftNow = () => {
+    if (view !== 'QUIZ' || activeQuestionIds.length === 0) return;
     try {
       const draft = buildDraftFromCurrentState();
       window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(draft));
     } catch {
       // ignore
     }
-  }, [view, activeQuestions, currentIndex, score, selectedAnswer, showFeedback, wrongQuestions, lastSelectedType, isShuffle, questionCount]);
+  };
+
+  // Mobile optimization: giảm số lần ghi localStorage + giảm tính toán.
+  // Chỉ lưu khi:
+  // - đổi câu hiện tại (`currentIndex`)
+  // - vừa chọn đáp án xong (`showFeedback === true`)
+  useEffect(() => {
+    if (view !== 'QUIZ') return;
+    if (activeQuestionIds.length === 0) return;
+    const t = window.setTimeout(saveDraftNow, 250);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, currentIndex]);
+
+  useEffect(() => {
+    if (view !== 'QUIZ') return;
+    if (activeQuestionIds.length === 0) return;
+    if (!showFeedback) return;
+    const t = window.setTimeout(saveDraftNow, 250);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, showFeedback]);
 
   const handleReviewWrong = () => {
     if (wrongQuestions.length === 0) {
